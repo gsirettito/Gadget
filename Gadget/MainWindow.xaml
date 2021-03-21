@@ -1,0 +1,144 @@
+﻿<Window x:Class="Gadget.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converter="clr-namespace:SiretT.Converters"
+        AllowsTransparency="True" WindowStyle="None" ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Background="Transparent"
+        Title="MainWindow" MinWidth="86" MinHeight="74" SizeToContent="WidthAndHeight">
+    <Window.Resources>
+        <Style x:Key="OptionButton" TargetType="Button">
+            <Setter Property="Width" Value="16"/>
+            <Setter Property="Height" Value="16"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Ellipse Name="_base_" Fill="#23000000" Visibility="Collapsed"
+                                         Width="{TemplateBinding ActualWidth}"
+                                         Height="{TemplateBinding ActualHeight}"/>
+                            <TextBlock FontFamily="Segoe MDL2 Assets"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   TextAlignment="Center"
+                                   VerticalAlignment="Center" FontWeight="Bold"><ContentPresenter/></TextBlock>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="_base_" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Foreground" Value="#53000000"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="GadgetButton" TargetType="ContentControl">
+            <Setter Property="Width" Value="64"/>
+            <Setter Property="Height" Value="64"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContentControl">
+                        <Grid>
+                            <Ellipse Name="_base_"
+                                     FocusVisualStyle="{x:Null}"
+                                     KeyboardNavigation.TabNavigation="None"
+                                     Width="{TemplateBinding ActualWidth}"
+                                     Height="{TemplateBinding ActualHeight}">
+                                <Ellipse.Fill>
+                                    <VisualBrush>
+                                        <VisualBrush.Visual>
+                                            <Border Background="{TemplateBinding Background}"
+                                                    FocusVisualStyle="{x:Null}"
+                                                    KeyboardNavigation.TabNavigation="None"
+                                                    Width="{TemplateBinding ActualWidth}"
+                                                    Height="{TemplateBinding ActualHeight}">
+                                                <ContentPresenter VerticalAlignment="Center"
+                                                                  HorizontalAlignment="Center"
+                                                                  FocusVisualStyle="{x:Null}"
+                                                                  KeyboardNavigation.TabNavigation="None"
+                                                                  Content="{TemplateBinding Content}"/>
+                                            </Border>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Foreground" Value="#53000000"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <converter:ColorToContrastColorConverter x:Key="colorConverter" />
+    </Window.Resources>
+    <Canvas>
+        <ContentControl x:Name="_gadget_" HorizontalAlignment="Left"
+                        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                        Margin="5"
+                        Style="{StaticResource GadgetButton}"
+                        PreviewMouseDown="_gadget__MouseDown"
+                        PreviewMouseUp="_gadget__MouseUp"
+                        PreviewMouseWheel="_gadget__MouseWheel">
+            <ContentControl.Effect>
+                <DropShadowEffect ShadowDepth="0" BlurRadius="10"/>
+            </ContentControl.Effect>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="32" Margin="4,0,0,0">
+                    <TextBlock.Foreground>
+                        <SolidColorBrush Color="{Binding Background.Color, ElementName=_gadget_, Converter={StaticResource colorConverter}}" />
+                    </TextBlock.Foreground>
+                </TextBlock>
+                <TextBlock>GADGET
+                    <TextBlock.Foreground>
+                        <SolidColorBrush Color="{Binding Background.Color, ElementName=_gadget_, Converter={StaticResource colorConverter}}" />
+                    </TextBlock.Foreground>
+                </TextBlock>
+            </StackPanel>
+        </ContentControl>
+        <Border Name="_opt_"
+                MouseLeave="_hover__MouseLeave"
+                Visibility="Collapsed"
+                Background="White"
+                Canvas.Left="64"
+                CornerRadius="9"
+                Padding="1"
+                Margin="2">
+            <StackPanel>
+                <Button Click="Button_Click" Style="{StaticResource OptionButton}"></Button>
+                <Button Click="settings_Click" Style="{StaticResource OptionButton}"></Button>
+                <Button Click="fixed_Click" Style="{StaticResource OptionButton}" RenderTransformOrigin="0.5,0.5">
+                    <Button.RenderTransform>
+                        <TransformGroup>
+                            <RotateTransform x:Name="pinned" Angle="0"/>
+                        </TransformGroup>
+                    </Button.RenderTransform> 
+                </Button>
+                <Button Click="Button_Click" Style="{StaticResource OptionButton}">
+                    <TextBlock
+                               FontFamily="Segoe MDL2 Assets"
+                               HorizontalAlignment="Center"
+                               MouseDown="MainWindow_MouseDown"
+                               FontWeight="Bold"></TextBlock>
+                </Button>
+            </StackPanel>
+        </Border>
+        <Border Name="_hover_"
+                MouseEnter="_hover__MouseEnter"
+                Width="{Binding ActualWidth, ElementName=_opt_}"
+                Height="{Binding ActualHeight, ElementName=_opt_}"
+                Background="Transparent"
+                Canvas.Left="64"
+                CornerRadius="9"
+                Padding="1"
+                Margin="2"/>
+    </Canvas>
+</Window>
